@@ -5,7 +5,6 @@ const router = express.Router();
 const {
   validateBody,
   checkRequestBody,
-  jsonParser,
   isValidId,
 } = require("../../middlewares/");
 
@@ -23,7 +22,6 @@ router.get("/:contactId", isValidId, ctrl.getContactById);
 router.post(
   "/",
   checkRequestBody,
-  jsonParser,
   validateBody(addContactSchema),
   ctrl.addContact
 );
@@ -32,7 +30,6 @@ router.put(
   "/:contactId",
   isValidId,
   checkRequestBody,
-  jsonParser,
   validateBody(addContactSchema),
   ctrl.updateById
 );
@@ -41,7 +38,6 @@ router.patch(
   "/:contactId/favorite/",
   isValidId,
   checkRequestBody,
-  jsonParser,
   validateBody(updateStatusSchema),
   ctrl.updateStatusContact
 );
