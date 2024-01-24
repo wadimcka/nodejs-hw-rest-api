@@ -1,16 +1,15 @@
-const contacts = require("../models/contacts");
-
+const ContactModel = require("../models/contact");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
 const getAllContacts = async (req, res, next) => {
-  const result = await contacts.listContacts();
+  const result = await ContactModel.find({}, "-name");
   res.status(200).json(result);
 };
 
 const getContactById = async (req, res, next) => {
   const contactId = req.params.contactId;
   console.log(contactId);
-  const result = await contacts.getContactById(contactId);
+  const result = await ContactModel.findById(contactId);
 
   if (!result) {
     throw HttpError(404, "Contact not found");
@@ -19,27 +18,40 @@ const getContactById = async (req, res, next) => {
 };
 
 const addContact = async (req, res, next) => {
-  const result = await contacts.addContact(req.body);
+  const result = await ContactModel.create(req.body);
   res.status(201).json(result);
+};
+
+const updateById = async (req, res, next) => {
+  const contactId = req.params.contactId;
+  const result = await ContactModel.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404, "Contact not found");
+  }
+  res.json(result);
+};
+
+const updateStatusContact = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await ContactModel.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404, "Contact not found");
+  }
+  res.json(result);
 };
 
 const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await contacts.removeContact(contactId);
+  const result = await ContactModel.findByIdAndDelete(contactId);
   if (!result) {
     throw HttpError(404, "Contact not found");
   }
 
   res.status(200).json({ message: "contact deleted" });
-};
-
-const updateById = async (req, res, next) => {
-  const contactId = req.params.contactId;
-  const result = await contacts.updateContact(contactId, req.body);
-  if (!result) {
-    throw HttpError(404, "Contact not found");
-  }
-  res.json(result);
 };
 
 module.exports = {
@@ -48,4 +60,5 @@ module.exports = {
   addContact: ctrlWrapper(addContact),
   deleteContact: ctrlWrapper(deleteContact),
   updateById: ctrlWrapper(updateById),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
 };
