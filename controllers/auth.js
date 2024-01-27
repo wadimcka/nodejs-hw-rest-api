@@ -76,9 +76,30 @@ const logout = async (req, res, next) => {
   res.status(204).end();
 };
 
+const subscriptionChange = async (req, res, next) => {
+  const { _id, subscription } = req.user;
+
+  if (subscription === req.body.subscription) {
+    return res.status(409).send({
+      message: `You are trying to change the current subscription ${subscription} to ${req.body.subscription}`,
+    });
+  }
+
+  const changedUser = await UserModel.findByIdAndUpdate(_id, {
+    subscription: req.body.subscription,
+  });
+  if (changedUser === null) {
+    return next(HttpError(404));
+  }
+  res.status(201).send({
+    message: `Your subscription has been changed to ${req.body.subscription}`,
+  });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
+  subscriptionChange: ctrlWrapper(subscriptionChange),
 };
