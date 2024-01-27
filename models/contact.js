@@ -17,12 +17,16 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
 
 contactSchema.post("save", handleMongooseError);
 
-const ContactModel = model("contact", contactSchema);
+const ContactModel = model("Contact", contactSchema);
 
 module.exports = ContactModel;
