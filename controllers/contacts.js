@@ -11,11 +11,19 @@ const getAllContacts = async (req, res, next) => {
   //   limit,
   // }).populate("owner");
 
+  const { favorite } = req.query;
+
+  const query = { owner };
+
+  if (favorite !== undefined) {
+    query.favorite = favorite === "true";
+  }
+
   const result = await ContactModel.find({ owner })
     .skip(skip)
     .limit(limit)
     .select("-createdAt -updatedAt")
-    .populate("owner");
+    .populate("owner", "-_id email");
 
   res.status(200).json(result);
 };
