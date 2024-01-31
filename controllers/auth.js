@@ -1,14 +1,15 @@
 require("dotenv").config();
 const bcryptjs = require("bcryptjs");
-
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("node:fs/promises");
+const gravatar = require("gravatar");
 
 const { JWT_SECRET_KEY } = process.env;
-
 const { UserModel } = require("../models/user");
+const { ctrlWrapper, HttpError, imageUpdate } = require("../helpers");
 
-const { ctrlWrapper, HttpError } = require("../helpers");
-// const { token } = require("morgan");
+const avatarDir = path.join(__dirname, "..", "public", "avatars");
 
 const register = async (req, res, next) => {
   const { password, email } = req.body;
@@ -18,10 +19,12 @@ const register = async (req, res, next) => {
     throw HttpError(409, "Email in use");
   }
   const hashPassword = await bcryptjs.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
   const newUser = await UserModel.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
   });
 
   res.status(201).json({
@@ -96,10 +99,31 @@ const subscriptionChange = async (req, res, next) => {
   });
 };
 
+const changeAvatar = async (req, res, next) => {
+  const { originalname } = req.file;
+  const { _id } = req.user;
+
+  const extname = path.extname(originalname);
+  const basename = path.basename(originalname, extname);
+  const newFileName = `${basename}-${_id}${extname}`;
+
+  const { path: tempUpload } = req.file;
+  const avatarUploadPath = path.join(avatarDir, newFileName);
+  await fs.rename(tempUpload, avatarUploadPath);
+  const avatarURL = path.join("avatars", newFileName);
+
+  imageUpdate(avatarUploadPath);
+
+  await UserModel.findByIdAndUpdate(_id, { avatarURL });
+
+  res.status(201).send({ avatarURL });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
   subscriptionChange: ctrlWrapper(subscriptionChange),
+  changeAvatar: ctrlWrapper(changeAvatar),
 };

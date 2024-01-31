@@ -3,3 +3,5 @@ node_modules/
 .env.lokal
 .idea
 .vscode
+temp/*
+!temp/.gitkeep

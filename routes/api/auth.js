@@ -4,6 +4,7 @@ const {
   validateBody,
   checkRequestBody,
   authenticate,
+  upload,
 } = require("../../middlewares/");
 
 const {
@@ -34,6 +35,13 @@ router.patch(
   checkRequestBody,
   validateBody(subscriptionSchema),
   ctrl.subscriptionChange
+);
+
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  ctrl.changeAvatar
 );
 
 module.exports = router;
