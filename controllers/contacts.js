@@ -30,7 +30,6 @@ const getAllContacts = async (req, res, next) => {
 
 const getContactById = async (req, res, next) => {
   const contactId = req.params.contactId;
-  console.log(contactId);
   const result = await ContactModel.findById(contactId);
 
   if (!result) {
@@ -41,6 +40,7 @@ const getContactById = async (req, res, next) => {
 
 const addContact = async (req, res, next) => {
   const { _id: owner } = req.user;
+
   const result = await ContactModel.create({ ...req.body, owner });
   res.status(201).json(result);
 };
