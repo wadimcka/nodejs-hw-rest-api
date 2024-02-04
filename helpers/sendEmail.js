@@ -1,14 +1,14 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
-const { META_PASSWORD } = process.env;
+const { META_USER, META_PASSWORD } = process.env;
 
 const transport = nodemailer.createTransport({
   host: "smtp.meta.ua",
   port: 465,
   secure: true,
   auth: {
-    user: "jonka1955@meta.ua",
+    user: META_USER,
     pass: META_PASSWORD,
   },
 });
