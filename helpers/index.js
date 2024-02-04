@@ -2,5 +2,12 @@ const HttpError = require("./HttpError");
 const ctrlWrapper = require("./ctrlWrapper");
 const handleMongooseError = require("./handleMongooseError");
 const imageUpdate = require("./imageUpdate");
+const sendEmail = require("./sendEmail");
 
-module.exports = { HttpError, ctrlWrapper, handleMongooseError, imageUpdate };
+module.exports = {
+  HttpError,
+  ctrlWrapper,
+  handleMongooseError,
+  imageUpdate,
+  sendEmail,
+};

@@ -11,6 +11,7 @@ const {
   registerSchema,
   loginSchema,
   subscriptionSchema,
+  emailVerifySchema,
 } = require("../../schemas/user");
 const ctrl = require("../../controllers/auth");
 
@@ -24,6 +25,15 @@ router.post(
 );
 
 router.post("/login", checkRequestBody, validateBody(loginSchema), ctrl.login);
+
+router.get("/verify/:verificationToken", ctrl.verifyEmail);
+
+router.post(
+  "/verify",
+  checkRequestBody,
+  validateBody(emailVerifySchema),
+  ctrl.resendVerifyEmail
+);
 
 router.get("/current", authenticate, ctrl.current);
 
