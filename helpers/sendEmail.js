@@ -23,14 +23,3 @@ async function sendEmail(data) {
 }
 
 module.exports = sendEmail;
-
-// const { MAIL_TRAP_USER, MAIL_TRAP_PAS } = process.env;
-
-// const transport = nodemailer.createTransport({
-//   host: "sandbox.smtp.mailtrap.io",
-//   port: 2525,
-//   auth: {
-//     user: MAIL_TRAP_USER,
-//     pass: MAIL_TRAP_PAS,
-//   },
-// });
